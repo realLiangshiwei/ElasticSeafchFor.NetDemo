@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <script type="text/javascript">
+        function search() {
+            var filter = $("#filter").val();
+            if (!filter || $.trim(filter) === "") {
+                alert("请输入搜索条件");
+                return;
+            }
+
+            $.ajax({
+                type: "get",
+                url: "/Home/Search",
+                data: { page: 1, filter: filter, flag: true },
+                datatype: "html",
+                success: function (data) {
+                    $(".jumbotron").html(data);
+                    $("#ulDiv").html("");
+                }
+            });
+
+        }
+
+        function searchSuggestions() {
+            var prefix = $("#filter").val();
+            if (!prefix || $.trim(prefix) === "") {
+                $("#ulDiv").html("");
+                return;
+            }
+
+            $.ajax({
+                type: "get",
+                url: "/Home/SearchPrefix",
+                data: { prefix: prefix },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var str = '<ul class="list-group"></ul>';
+                        for (var i = 0; i < data.length; i++) {
+                            str += '<li class="list-group-item" onmouseenter="lifocus(&quot;'+data[i]+'&quot;)">' + data[i] + '</li>';
+                        }
+                        str += "</ul>";
+
+                        $("#ulDiv").html(str);
+                    } else {
+                        $("#ulDiv").html("");
+                    }
+
+                }
+            });
+        }
+
+        function lifocus(str) {
+          
+            $("#filter").val(str);
+        }
+    </script>
+
+</head>
+<body>
+    <div class="container" style="width: 100%">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">ElasticSearch</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <form class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <input type="text" id="filter" class="form-control" onkeyup="searchSuggestions()" />
+                                <div id="ulDiv" style="float: inherit">
+                                 
+                                </div>
+
+                            </div> <button type="button" onclick="search()" class="btn btn-default" style="float: right">搜索</button>
+                        </form>
+
+                    </div>
+                </nav>
+                <div class="jumbotron">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

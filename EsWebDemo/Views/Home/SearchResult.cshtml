@@ -1,0 +1,32 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc
+@{
+    if (!ViewBag.flag)
+    {
+        Layout = "_Layout.cshtml";
+    }
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<span>耗时 @ViewBag.took 毫秒</span>
+<table class="table">
+    <thead>
+        <tr>
+            <th>标题</th>
+            <th>内容</th>
+            <th>时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var article in ViewBag.paged)
+        {
+            <tr>
+                <td>@Html.Raw(article.Title)</td>
+                <td>@Html.Raw(article.Content)</td>
+                <td style="width: 100px">@article.DateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)ViewBag.paged, page => Url.Action("Search", new { page, filter = ViewBag.filter.ToString() }))
