@@ -31,12 +31,24 @@ namespace EsWebDemo.Controllers
             var paged = new StaticPagedList<Article>(result.List, pageNumber, pageSize, Convert.ToInt32(result.Total));
             ViewBag.paged = paged;
 
+
+
             #region 准备数据 
+
+            //await _elasticSearchSerivce.AddToEs(new Article()
+            //{
+            //    Title = "这是一个离婚诉讼案例",
+            //    Content = "这是一个离婚诉讼案例,其实这个文章就是用来测试的而已,今天天气还可以",
+            //    DateTime = DateTime.Now,
+            //    Descirption = "这是一个离婚诉讼案例",
+            //    Id = "10",
+            //    KeyWord = new List<Keyword>() { new Keyword() { Input = "and", Weight = 10 } }
+            //});
             //Random ran = new Random();
-            //for (int i = 0; i < 1000; i++)
+            //for (int i = 0; i < 10; i++)
             //{
             //    var list = new List<Article>();
-            //    for (int j = 0; j < 1000; j++)
+            //    for (int j = 0; j < 10; j++)
             //    {
             //        list.Add(new Article()
             //        {

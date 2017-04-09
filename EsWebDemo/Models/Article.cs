@@ -12,13 +12,13 @@ namespace EsWebDemo.Models
         [Text(Index = true)]
         public string Id { get; set; }
 
-        [Text(Analyzer = "ik_max_word")]
+        [Text(Analyzer = "ik_syno",SearchAnalyzer = "ik_syno")]
         public string Title { get; set; }
 
-        [Text(Analyzer = "ik_max_word")]
+        [Text(Analyzer = "ik_syno",SearchAnalyzer = "ik_syno")]
         public string Descirption { get; set; }
 
-        [Text(Analyzer = "ik_max_word")]
+        [Text(Analyzer = "ik_syno",SearchAnalyzer = "ik_syno")]
         public string Content { get; set; }
 
         [Completion(Analyzer = "keyword", SearchAnalyzer = "keyword", PreserveSeparators = false)]

@@ -32,8 +32,10 @@ namespace EsWebDemo
             {
                 var response = await _elasticClient.CreateIndexAsync(_indexName,
                     c =>
-                        c.Index(_indexName).Settings(s => s.NumberOfShards(1).NumberOfReplicas(1).Setting("max_result_window", int.MaxValue))
-                            .Mappings(ms => ms.Map<T>(m => m.AutoMap())));
+                        c.Index(_indexName)
+                        .Settings(
+                            s => s.Analysis(an=>an.TokenFilters(filter=>filter.Synonym("syno",syno=>syno.SynonymsPath("analysis/synonym.txt"))).Analyzers(ana=>ana.Custom("ik_syno",ik=>ik.Tokenizer("ik_max_word").Filters("syno")))).NumberOfShards(1).NumberOfReplicas(1).Setting("max_result_window", int.MaxValue))
+                        .Mappings(ms => ms.Map<T>(m => m.AutoMap())));
                 if (!response.Acknowledged)
                 {
                     throw new Exception("创建失败" + response.ServerError.Error.Reason);
@@ -105,8 +107,8 @@ namespace EsWebDemo
             }
 
             var queryDes = new QueryContainerDescriptor<Article>();
+           
             queryDes.MultiMatch(mm => mm.Query(input.Filter).Fields(f => fields));
-
             query.Query(q => queryDes);
 
             //排序
@@ -124,7 +126,6 @@ namespace EsWebDemo
             }
             highdes.Fields(hfs.ToArray());
             query.Highlight(h => highdes);
-
             var response = await _elasticClient.SearchAsync<Article>(query);
             var result = new SearchResult<Article>
             {
